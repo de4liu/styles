@@ -40,9 +40,12 @@
     <contributor>
       <name>Dennis Riehle</name>
     </contributor>
+    <contributor>
+      <name>De Liu</name>
+    </contributor>
     <category citation-format="author-date"/>
     <issn>0276-7783</issn>
-    <updated>2014-12-10T00:32:45+00:00</updated>
+    <updated>2016-05-21T06:08:10+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en-US">
@@ -108,55 +111,41 @@
   </macro>
   <macro name="access">
     <choose>
-      <if variable="DOI">
-        <text variable="DOI" prefix=" (doi: " suffix=")"/>
+      <if type="webpage" match="any">
+        <date variable="issued">
+          <date-part name="month" form="long" prefix=", "/>
+          <date-part name="day" form="numeric" prefix=" "/>
+        </date>
+        <group prefix=" Retrieved from ">
+          <text variable="URL"/>
+          <choose>
+            <if variable="accessed">
+              <text value=" on "/>
+              <date variable="accessed">
+                <date-part name="month" form="long" prefix=" "/>
+                <date-part name="day" form="numeric" suffix="," prefix=" "/>
+                <date-part name="year" prefix=" "/>
+              </date>
+            </if>
+          </choose>
+        </group>
       </if>
-      <else>
-        <choose>
-          <if type="article article-magazine article-newspaper article-journal bill book broadcast chapter entry-dictionary figure graphic interview legislation legal_case map motion_picture musical_score pamphlet paper-conference patent personal_communication report review review-book song speech thesis treaty" match="any">
-            <group prefix=" (" suffix=")">
-              <text term="available at" suffix=" "/>
-              <text variable="URL"/>
-            </group>
-          </if>
-          <else>
-            <date variable="issued">
-              <date-part name="month" form="long" prefix=", "/>
-              <date-part name="day" form="numeric" prefix=" "/>
-            </date>
-            <group prefix=" (" suffix=")">
-              <text term="available at" suffix=" "/>
-              <text variable="URL"/>
-              <choose>
-                <if variable="accessed">
-                  <text term="retrieved" prefix="; "/>
-                  <date variable="accessed">
-                    <date-part name="month" form="long" prefix=" "/>
-                    <date-part name="day" form="numeric" suffix="," prefix=" "/>
-                    <date-part name="year" prefix=" "/>
-                  </date>
-                </if>
-              </choose>
-            </group>
-          </else>
-        </choose>
-      </else>
     </choose>
   </macro>
   <macro name="title">
     <choose>
       <if type="report thesis" match="any">
-        <text variable="title" quotes="true" suffix=","/>
-        <group prefix=" " suffix=", ">
-          <text variable="genre"/>
-          <text variable="number" prefix=" No. "/>
+        <text variable="title" text-case="title" quotes="true" suffix=","/>
+        <group prefix=" ">
+          <text variable="genre" font-style="italic"/>
+          <text variable="number" font-style="normal" prefix=" No. "/>
         </group>
       </if>
       <else-if type="bill book graphic legal_case legislation manuscript motion_picture report song speech" match="any">
-        <text variable="title" font-style="italic"/>
+        <text variable="title" text-case="title" font-style="italic"/>
       </else-if>
       <else>
-        <text variable="title" quotes="true" suffix=","/>
+        <text variable="title" text-case="title" quotes="true" suffix=","/>
       </else>
     </choose>
   </macro>
@@ -285,9 +274,12 @@
       <choose>
         <if type="chapter paper-conference" match="any">
           <text term="in" suffix=" "/>
+          <text variable="container-title" font-style="italic" suffix=","/>
         </if>
+        <else>
+          <text variable="container-title" font-style="italic"/>
+        </else>
       </choose>
-      <text variable="container-title" font-style="italic"/>
     </group>
   </macro>
   <citation et-al-min="3" et-al-use-first="1" disambiguate-add-year-suffix="true" disambiguate-add-names="true" disambiguate-add-givenname="true" givenname-disambiguation-rule="by-cite" collapse="year">
@@ -314,7 +306,7 @@
       <group suffix=".">
         <text macro="author" suffix="."/>
         <text macro="issued" prefix=" " suffix="."/>
-        <group delimiter="" prefix=" ">
+        <group delimiter=" " prefix=" ">
           <group delimiter=" ">
             <text macro="title"/>
             <text macro="container-phrase"/>
@@ -334,7 +326,7 @@
           <label variable="page" form="short"/>
           <text variable="page"/>
         </group>
-        <text macro="access"/>
+        <text macro="access" prefix=", "/>
       </group>
     </layout>
   </bibliography>
